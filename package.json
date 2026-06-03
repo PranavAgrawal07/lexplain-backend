@@ -1,0 +1,14 @@
+{
+  "name": "lexplain-backend",
+  "version": "1.0.0",
+  "description": "LexPlain — legal clause simplifier backend",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^4.22.2",
+    "groq-sdk": "^0.3.3"
+  }
+}
