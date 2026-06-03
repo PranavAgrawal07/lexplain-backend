@@ -47,9 +47,30 @@ Return ONLY a valid JSON object, no markdown, no preamble:
   "keyParties": ["Party A role", "Party B role"]
 }`;
 
+function buildSearchKeywords(clauseType) {
+  const type = (clauseType || "").toLowerCase();
+  if (type.includes("non-compete") || type.includes("noncompete")) return "non-compete agreement employment";
+  if (type.includes("indemnif")) return "indemnification liability contract";
+  if (type.includes("confidential") || type.includes("nda")) return "confidentiality nondisclosure agreement";
+  if (type.includes("termination")) return "contract termination breach";
+  if (type.includes("intellectual property") || type.includes("ip owner")) return "intellectual property ownership assignment";
+  if (type.includes("license")) return "license grant intellectual property";
+  if (type.includes("payment") || type.includes("invoice")) return "payment terms contract breach";
+  if (type.includes("limitation") || type.includes("liability cap")) return "limitation liability damages contract";
+  if (type.includes("warranty") || type.includes("warranties")) return "warranty disclaimer contract";
+  if (type.includes("arbitration") || type.includes("dispute")) return "arbitration dispute resolution contract";
+  if (type.includes("force majeure")) return "force majeure contract performance";
+  if (type.includes("assignment")) return "contract assignment transfer rights";
+  if (type.includes("non-solicit") || type.includes("nonsolicitation")) return "non-solicitation employees customers";
+  if (type.includes("governing law") || type.includes("jurisdiction")) return "governing law jurisdiction contract";
+  // fallback: take first 3 significant words from the clause type
+  const words = clauseType.replace(/[^a-zA-Z\s]/g, "").split(/\s+/).filter(w => w.length > 2).slice(0, 3);
+  return words.length ? words.join(" ") + " contract" : "contract clause";
+}
+
 async function fetchCaseLaw(clauseType) {
   try {
-    const query = encodeURIComponent(clauseType || "contract clause");
+    const query = encodeURIComponent(buildSearchKeywords(clauseType));
     const url = `https://www.courtlistener.com/api/rest/v3/search/?q=${query}&type=o&format=json&page_size=3`;
     const res = await fetch(url, {
       headers: { Authorization: `Token ${process.env.COURTLISTENER_API_KEY}` }
